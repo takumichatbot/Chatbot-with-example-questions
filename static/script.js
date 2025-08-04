@@ -7,7 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage(question);
         });
     });
+    // ページ読み込み時に履歴を取得して表示
+    loadHistory();
 });
+
+async function loadHistory() {
+    try {
+        const response = await fetch('/history');
+        if (!response.ok) {
+            throw new Error(`サーバーエラー: ${response.status}`);
+        }
+        const history = await response.json();
+        history.forEach(item => {
+            addMessageToChat(item.sender, item.message);
+        });
+    } catch (error) {
+        console.error('Fetchエラー（履歴取得）:', error);
+    }
+}
 
 async function sendMessage(message = null) {
     const userInput = document.getElementById('user-input');
@@ -38,7 +55,10 @@ async function sendMessage(message = null) {
         const data = await response.json();
         
         // ローディングメッセージを削除
-        document.querySelector('.bot-message:last-child').remove();
+        const loadingMessage = document.querySelector('.bot-message:last-child');
+        if (loadingMessage) {
+            loadingMessage.remove();
+        }
         
         // AIの回答をチャット画面に追加
         addMessageToChat('bot', data.answer);
@@ -46,13 +66,11 @@ async function sendMessage(message = null) {
     } catch (error) {
         console.error('Fetchエラー:', error);
         
-        // ローディングメッセージを削除
         const loadingMessage = document.querySelector('.bot-message:last-child');
         if (loadingMessage) {
             loadingMessage.remove();
         }
 
-        // タイムアウトやネットワークエラーの場合のメッセージ
         addMessageToChat('bot', '申し訳ありませんが、ネットワーク接続に問題が発生しました。しばらくしてから再度お試しください。');
     }
 }
