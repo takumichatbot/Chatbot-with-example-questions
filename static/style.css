@@ -26,7 +26,7 @@ body {
 
 /* ヘッダー */
 .chatbot-header {
-    background-color: #7d44c9;
+    background-color: #3b5998;
     color: #fff;
     padding: 15px;
     text-align: center;
@@ -97,7 +97,7 @@ body {
 }
 
 .chatbot-input button {
-    background-color: #7d44c9;
+    background-color: #3b5998;
     color: #fff;
     border: none;
     border-radius: 20px;
